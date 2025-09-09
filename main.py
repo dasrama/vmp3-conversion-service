@@ -1,9 +1,14 @@
-import boto3
 from config.settings import Settings
+from config.config import AppInitializer
+from utils.queue import callback
 
 def main():
-    s3_client = boto3.client(
-        aws_access_key_id=Settings().AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=Settings().AWS_SECRET_KEY,
-        region_name=Settings().REGION_NAME
+    app = AppInitializer()
+    s3_client = app.get_s3_client()
+    channel = app.get_rabbit_channel()
+
+    channel.basic_consume(
+        queue=Settings().QUEUE,
+        on_message_callback=callback
     )
+    
