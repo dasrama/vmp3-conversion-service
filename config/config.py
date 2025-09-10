@@ -21,3 +21,8 @@ class AppInitializer:
 
     def get_rabbit_channel(self):
         return self.rabbit_channel
+
+    def close(self):
+        """Close RabbitMQ connection"""
+        if self.rabbit_connection and self.rabbit_connection.is_open:
+            self.rabbit_connection.close()
